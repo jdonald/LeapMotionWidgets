@@ -5,6 +5,8 @@
 \******************************************************************************/
 
 using UnityEngine;
+using UnityEngine.UI;
+using System;
 using System.Collections.Generic;
 using Leap;
 
@@ -36,7 +38,9 @@ public class HandController : MonoBehaviour {
   public TextAsset recordingAsset;
   public float recorderSpeed = 1.0f;
   public bool recorderLoop = true;
-  
+
+  public Text frameRateText;
+
   protected LeapRecorder recorder_ = new LeapRecorder();
   
   protected Controller leap_controller_;
@@ -237,10 +241,11 @@ public class HandController : MonoBehaviour {
     timeleft -= Time.deltaTime;
     accum += Time.timeScale/Time.deltaTime;
     ++frames;
-
     if (timeleft <= 0.0f) {
-      //GetComponent.<GUIText>().text = "render fps: " + (accum/frames).ToString("f2");
-      Debug.LogWarning("Update: data fps:" + frame.CurrentFramesPerSecond.ToString ("f2") +
+	  if (frameRateText != null)
+	    frameRateText.text = "Data FPS:" + frame.CurrentFramesPerSecond.ToString ("f2") +
+            Environment.NewLine + "Render FPS:" + (accum/frames).ToString("f2");
+	  Debug.LogWarning("Update: data fps:" + frame.CurrentFramesPerSecond.ToString ("f2") +
                  " render fps:" + (accum/frames).ToString("f2"));
       timeleft = UPDATE_INTERVAL;
       accum = 0.0f;
