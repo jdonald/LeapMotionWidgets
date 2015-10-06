@@ -42,7 +42,7 @@ public class OVRVolumeControl : MonoBehaviour {
 	void Start () {
 		DontDestroyOnLoad( gameObject );
 		MyTransform = transform;
-		renderer.enabled = false;
+		GetComponent<Renderer>().enabled = false;
 		
 	}
 	
@@ -55,8 +55,8 @@ public class OVRVolumeControl : MonoBehaviour {
 		double timeSinceLastVolumeChange = OVRDevice.GetTimeSinceLastVolumeChange();
 		if ( ( timeSinceLastVolumeChange != -1 ) && ( timeSinceLastVolumeChange < ShowPopupTime ) )
 		{
-			renderer.enabled = true;
-			renderer.material.mainTextureOffset = new Vector2( 0, ( float )( MaxVolume - OVRDevice.GetVolume() ) / ( float )NumVolumeImages );
+			GetComponent<Renderer>().enabled = true;
+			GetComponent<Renderer>().material.mainTextureOffset = new Vector2( 0, ( float )( MaxVolume - OVRDevice.GetVolume() ) / ( float )NumVolumeImages );
 			if ( MyTransform != null )
 			{
 				// place in front of camera
@@ -66,7 +66,7 @@ public class OVRVolumeControl : MonoBehaviour {
 		}
 		else
 		{
-			renderer.enabled = false;
+			GetComponent<Renderer>().enabled = false;
 		}
 	}
 }

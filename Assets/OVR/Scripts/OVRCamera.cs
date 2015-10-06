@@ -126,7 +126,7 @@ public class OVRCamera : MonoBehaviour
 		if (CameraTexture[0] == null)
 			CreateRenderTexture (CameraController.CameraTextureScale);
 					
-		camera.targetTexture = CameraTexture[(RightEye) ? 1 : 0];
+		GetComponent<Camera>().targetTexture = CameraTexture[(RightEye) ? 1 : 0];
 #endif
 	}
 	
@@ -191,7 +191,7 @@ public class OVRCamera : MonoBehaviour
 	{	
 #if (!UNITY_ANDROID || UNITY_EDITOR)
 		// Main camera has a depth of 0, so it will be rendered first
-		if(camera.depth == 0.0f)
+		if(GetComponent<Camera>().depth == 0.0f)
 		{			
 			// If desired, update parent transform y rotation here
 			// This is useful if we want to track the current location of
@@ -200,7 +200,7 @@ public class OVRCamera : MonoBehaviour
 			// NOTE: This calculation is one frame behind 
 			if(CameraController.TrackerRotatesY == true)
 			{
-				Vector3 a = camera.transform.rotation.eulerAngles;
+				Vector3 a = GetComponent<Camera>().transform.rotation.eulerAngles;
 				a.x = 0; 
 				a.z = 0;
 				transform.parent.transform.eulerAngles = a;
@@ -259,11 +259,11 @@ public class OVRCamera : MonoBehaviour
 		
 		// * * *
 		// Update camera rotation
-		camera.transform.rotation = q;
+		GetComponent<Camera>().transform.rotation = q;
 		
 		// * * *
 		// Update camera position (first add Offset to parent transform)
-		camera.transform.localPosition = NeckPosition;
+		GetComponent<Camera>().transform.localPosition = NeckPosition;
 	
 		// Adjust neck by taking eye position and transforming through q
 		// Get final camera position as well as the clipping difference 
@@ -275,12 +275,12 @@ public class OVRCamera : MonoBehaviour
 		// For example, this location is used to update the GridCube
 		foreach(OVRCameraGameObject obj in CameraLocalSetList)
 		{
-			if(obj.CameraController.GetCameraDepth() == camera.depth)
+			if(obj.CameraController.GetCameraDepth() == GetComponent<Camera>().depth)
 			{
 				// Initial difference
 				Vector3 newPos = -(qp * CameraPositionOffset);
 				// Final position
-				newPos += camera.transform.position;
+				newPos += GetComponent<Camera>().transform.position;
 			
 				// Set the game object info
 				obj.CameraGameObject.transform.position = newPos;
@@ -289,7 +289,7 @@ public class OVRCamera : MonoBehaviour
 		}
 
 		// Adjust camera position with offset/clipped cam location
-		camera.transform.localPosition += Quaternion.Inverse(camera.transform.parent.rotation) * qp * newCamPos;
+		GetComponent<Camera>().transform.localPosition += Quaternion.Inverse(GetComponent<Camera>().transform.parent.rotation) * qp * newCamPos;
 
 		// PGG: Call delegate function with new CameraOrientation / newCamPos here
 		// This location will be used to update the arrow pointer
@@ -309,7 +309,7 @@ public class OVRCamera : MonoBehaviour
 		// move eyes out by x (IPD)
 		Vector3 newEyePos = Vector3.zero;
 		newEyePos.x = EyePosition.x;
-		camera.transform.localPosition += camera.transform.localRotation * newEyePos;
+		GetComponent<Camera>().transform.localPosition += GetComponent<Camera>().transform.localRotation * newEyePos;
 #else
 		// NOTE: On Android, camera orientation is set from OVRCameraController Update()
 #endif
@@ -372,7 +372,7 @@ public class OVRCamera : MonoBehaviour
 			return;
 		
 		float fovH = GetHorizontalFOV();
-		eyeMesh.SetFOV(fovH, camera.fieldOfView);
+		eyeMesh.SetFOV(fovH, GetComponent<Camera>().fieldOfView);
 
 		eyeMesh.UpdateParams(ref lc, rightEye, flipY, CameraController.UseCameraTexture);
 	}
@@ -385,8 +385,8 @@ public class OVRCamera : MonoBehaviour
 	{
 //		return camera.fieldOfView * camera.aspect;
 
-		float vFOVInRads =  camera.fieldOfView * Mathf.Deg2Rad;
-		float hFOVInRads = 2 * Mathf.Atan( Mathf.Tan(vFOVInRads / 2) * camera.aspect);
+		float vFOVInRads =  GetComponent<Camera>().fieldOfView * Mathf.Deg2Rad;
+		float hFOVInRads = 2 * Mathf.Atan( Mathf.Tan(vFOVInRads / 2) * GetComponent<Camera>().aspect);
 		float hFOV = hFOVInRads * Mathf.Rad2Deg;
 
 		return hFOV;
@@ -415,7 +415,7 @@ public class OVRCamera : MonoBehaviour
 			if (CameraTexture[i] != null)
 				DestroyImmediate(CameraTexture[i]);
 				
-			CameraTexture[i] = new RenderTexture(w, h, 24, (camera.hdr) ? RenderTextureFormat.ARGBFloat : RenderTextureFormat.Default);
+			CameraTexture[i] = new RenderTexture(w, h, 24, (GetComponent<Camera>().hdr) ? RenderTextureFormat.ARGBFloat : RenderTextureFormat.Default);
 			CameraTexture[i].antiAliasing = (QualitySettings.antiAliasing == 0) ? 1 : QualitySettings.antiAliasing;
 		}
 	}

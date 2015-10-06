@@ -55,9 +55,9 @@ public class OVRPlatformMenu : MonoBehaviour {
 			Debug.Log( "Instantiating CursorTimer" );
 			InstantiatedCursorTimer = Instantiate( CursorTimer ) as GameObject;
 			if ( InstantiatedCursorTimer != null ) {
-				CursorTimerMaterial = InstantiatedCursorTimer.renderer.material;
+				CursorTimerMaterial = InstantiatedCursorTimer.GetComponent<Renderer>().material;
 				CursorTimerMaterial.SetColor ( "_Color", CursorTimerColor ); 
-				InstantiatedCursorTimer.renderer.enabled = false;
+				InstantiatedCursorTimer.GetComponent<Renderer>().enabled = false;
 			}
 		}
 		// reset each time we resume/start 
@@ -164,7 +164,7 @@ public class OVRPlatformMenu : MonoBehaviour {
 	/// </summary>
 	void UpdateCursor ( float timerRotateRatio ) {
 		if ( InstantiatedCursorTimer != null ) {
-			InstantiatedCursorTimer.renderer.enabled = true;
+			InstantiatedCursorTimer.GetComponent<Renderer>().enabled = true;
 
 			// Clamp the rotation ratio to avoid rendering artifacts
 			float alphaAmount = Mathf.Clamp ( 1.0f - timerRotateRatio, 0.0f, 1.0f );
@@ -188,7 +188,7 @@ public class OVRPlatformMenu : MonoBehaviour {
 	void ResetCursor () {
 		if ( InstantiatedCursorTimer != null ) {
 			CursorTimerMaterial.SetFloat ( "_Cutoff", 1.0f );
-			InstantiatedCursorTimer.renderer.enabled = false;
+			InstantiatedCursorTimer.GetComponent<Renderer>().enabled = false;
 		}
 	}
 }

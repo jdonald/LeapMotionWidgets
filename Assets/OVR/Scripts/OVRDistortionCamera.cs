@@ -99,7 +99,7 @@ public class OVRDistortionCamera : MonoBehaviour
 				);
 		}
 
-		camera.orthographic = true;
+		GetComponent<Camera>().orthographic = true;
 	}
 
 	/// <summary>
@@ -114,17 +114,17 @@ public class OVRDistortionCamera : MonoBehaviour
 			Debug.LogWarning("WARNING: OVRCameraController not found!");
 
 		// Without this, we will be drawing 1 frame behind
-		camera.depth = Mathf.Max (CameraLeft.depth, CameraRight.depth) + 1;
+		GetComponent<Camera>().depth = Mathf.Max (CameraLeft.depth, CameraRight.depth) + 1;
 		
 		// Don't want the camera to render anything..
-		camera.cullingMask = 0;
-		camera.eventMask = 0;
-		camera.useOcclusionCulling = false;
-		camera.backgroundColor = Color.black;
-		camera.clearFlags = (!CameraController.UseCameraTexture) ? CameraClearFlags.Nothing :
+		GetComponent<Camera>().cullingMask = 0;
+		GetComponent<Camera>().eventMask = 0;
+		GetComponent<Camera>().useOcclusionCulling = false;
+		GetComponent<Camera>().backgroundColor = Color.black;
+		GetComponent<Camera>().clearFlags = (!CameraController.UseCameraTexture) ? CameraClearFlags.Nothing :
 			CameraClearFlags.SolidColor; // TBD: This may be a performance loss on mobile.
-		camera.renderingPath = RenderingPath.Forward;
-		camera.orthographic = true;
+		GetComponent<Camera>().renderingPath = RenderingPath.Forward;
+		GetComponent<Camera>().orthographic = true;
 	}
 	
 	/// <summary>

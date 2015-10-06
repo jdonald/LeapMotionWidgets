@@ -415,14 +415,14 @@ public class OVRCameraController : MonoBehaviour
 			if(ovrcameras[i].RightEye || ( string.Compare( ovrcameras[i].name, "cameraright", true ) == 0 ) )
 			{
 				ovrcameras[i].RightEye = true;
-				SetCameras(CameraLeft, ovrcameras[i].camera);
+				SetCameras(CameraLeft, ovrcameras[i].GetComponent<Camera>());
 			}
 			else
 			{
-				SetCameras(ovrcameras[i].camera, CameraRight);
+				SetCameras(ovrcameras[i].GetComponent<Camera>(), CameraRight);
 			}
 
-			if ( ( ovrcameras[i].camera.clearFlags == CameraClearFlags.Skybox ) && ( ( ovrcameras[i].gameObject.GetComponent<Skybox>() != null ) || ( RenderSettings.skybox != null ) ) )
+			if ( ( ovrcameras[i].GetComponent<Camera>().clearFlags == CameraClearFlags.Skybox ) && ( ( ovrcameras[i].gameObject.GetComponent<Skybox>() != null ) || ( RenderSettings.skybox != null ) ) )
 			{
 				HasSkybox = true;
 				Debug.Log ( "Skybox Clear Required" );
@@ -587,7 +587,7 @@ public class OVRCameraController : MonoBehaviour
 			{
 				float w = (UseCameraTexture) ? scale : 0.5f * scale;
 				float x = (UseCameraTexture) ? 0f : (cameras[i].RightEye) ? 0.5f : 0f;
-				cameras[i].camera.rect = new Rect(x, 0f, w, scale);
+				cameras[i].GetComponent<Camera>().rect = new Rect(x, 0f, w, scale);
 			}
 			
 			// Aquire and Scale the lens correction components
