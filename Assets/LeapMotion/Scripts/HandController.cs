@@ -5,6 +5,8 @@
 \******************************************************************************/
 
 using UnityEngine;
+using UnityEngine.UI;
+using System;
 using System.Collections.Generic;
 using Leap;
 
@@ -36,7 +38,9 @@ public class HandController : MonoBehaviour {
   public TextAsset recordingAsset;
   public float recorderSpeed = 1.0f;
   public bool recorderLoop = true;
-  
+
+  public Text frameRateText;
+
   protected LeapRecorder recorder_ = new LeapRecorder();
   
   protected Controller leap_controller_;
@@ -45,6 +49,11 @@ public class HandController : MonoBehaviour {
   protected Dictionary<int, HandModel> hand_physics_;
   protected Dictionary<int, ToolModel> tools_;
   
+  private const float UPDATE_INTERVAL = 0.5f;
+  private float accum = 0.0f;
+  private int frames = 0;
+  private float timeleft;
+
   void OnDrawGizmos() {
     // Draws the little Leap Motion Controller in the Editor view.
     Gizmos.matrix = Matrix4x4.Scale(GIZMO_SCALE * Vector3.one);
@@ -78,6 +87,8 @@ public class HandController : MonoBehaviour {
 
     if (enableRecordPlayback && recordingAsset != null)
       recorder_.Load(recordingAsset);
+
+    timeleft = UPDATE_INTERVAL;
   }
 
   public void IgnoreCollisionsWithHands(GameObject to_ignore, bool ignore = true) {
@@ -226,6 +237,20 @@ public class HandController : MonoBehaviour {
     UpdateRecorder();
     Frame frame = GetFrame();
     UpdateHandModels(hand_graphics_, frame.Hands, leftGraphicsModel, rightGraphicsModel);
+
+    timeleft -= Time.deltaTime;
+    accum += Time.timeScale/Time.deltaTime;
+    ++frames;
+    if (timeleft <= 0.0f) {
+	  if (frameRateText != null)
+	    frameRateText.text = "Data FPS:" + frame.CurrentFramesPerSecond.ToString ("f2") +
+            Environment.NewLine + "Render FPS:" + (accum/(float)frames).ToString("f2");
+	  Debug.LogWarning("Update: data fps:" + frame.CurrentFramesPerSecond.ToString ("f2") +
+                 " render fps:" + (accum/(float)frames).ToString("f2"));
+      timeleft = UPDATE_INTERVAL;
+      accum = 0.0f;
+      frames = 0;
+    }
   }
 
   void FixedUpdate() {
