@@ -40,6 +40,7 @@ public class HandController : MonoBehaviour {
   public bool recorderLoop = true;
 
   public Text frameRateText;
+  //public Text frmText;
 
   protected LeapRecorder recorder_ = new LeapRecorder();
   
@@ -53,6 +54,7 @@ public class HandController : MonoBehaviour {
   private float accum = 0.0f;
   private int frames = 0;
   private float timeleft;
+  private float fps;
 
   void OnDrawGizmos() {
     // Draws the little Leap Motion Controller in the Editor view.
@@ -238,15 +240,26 @@ public class HandController : MonoBehaviour {
     Frame frame = GetFrame();
     UpdateHandModels(hand_graphics_, frame.Hands, leftGraphicsModel, rightGraphicsModel);
 
+	float interp = Time.deltaTime / (0.5f + Time.deltaTime);
+	float currentFPS = 1.0f / Time.deltaTime;
+	fps = Mathf.Lerp(fps, currentFPS, interp);
+	//text.text = Mathf.RoundToInt(fps) + "fps";
+
     timeleft -= Time.deltaTime;
     accum += Time.timeScale/Time.deltaTime;
     ++frames;
     if (timeleft <= 0.0f) {
-	  if (frameRateText != null)
-	    frameRateText.text = "Data FPS:" + frame.CurrentFramesPerSecond.ToString ("f2") +
-            Environment.NewLine + "Render FPS:" + (accum/(float)frames).ToString("f2");
-	  Debug.LogWarning("Update: data fps:" + frame.CurrentFramesPerSecond.ToString ("f2") +
+	  if (frameRateText != null) {
+	    //frameRateText.text = "Data FPS:" + frame.CurrentFramesPerSecond.ToString ("f2") +
+        //    Environment.NewLine + "Render FPS:" + (accum/(float)frames).ToString("f2");
+		frameRateText.text = "Data FPS:" + frame.CurrentFramesPerSecond.ToString ("f2") +
+				Environment.NewLine + "Render FPS:" + Mathf.RoundToInt(fps).ToString ("f2");
+
+	    //	frmText.text = "Data FPS:" + frame.CurrentFramesPerSecond.ToString ("f2") +
+	    //		Environment.NewLine + "Render FPS:" + (accum/(float)frames).ToString("f2");
+	    Debug.LogWarning("Update: data fps:" + frame.CurrentFramesPerSecond.ToString ("f2") +
                  " render fps:" + (accum/(float)frames).ToString("f2"));
+			}
       timeleft = UPDATE_INTERVAL;
       accum = 0.0f;
       frames = 0;
