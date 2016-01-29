@@ -243,27 +243,11 @@ public class HandController : MonoBehaviour {
 	float interp = Time.deltaTime / (0.5f + Time.deltaTime);
 	float currentFPS = 1.0f / Time.deltaTime;
 	fps = Mathf.Lerp(fps, currentFPS, interp);
-	//text.text = Mathf.RoundToInt(fps) + "fps";
 
-    timeleft -= Time.deltaTime;
-    accum += Time.timeScale/Time.deltaTime;
-    ++frames;
-    if (timeleft <= 0.0f) {
-	  if (frameRateText != null) {
-	    //frameRateText.text = "Data FPS:" + frame.CurrentFramesPerSecond.ToString ("f2") +
-        //    Environment.NewLine + "Render FPS:" + (accum/(float)frames).ToString("f2");
+	if (frameRateText != null) {
 		frameRateText.text = "Data FPS:" + frame.CurrentFramesPerSecond.ToString ("f2") +
-				Environment.NewLine + "Render FPS:" + Mathf.RoundToInt(fps).ToString ("f2");
-
-	    //	frmText.text = "Data FPS:" + frame.CurrentFramesPerSecond.ToString ("f2") +
-	    //		Environment.NewLine + "Render FPS:" + (accum/(float)frames).ToString("f2");
-	    Debug.LogWarning("Update: data fps:" + frame.CurrentFramesPerSecond.ToString ("f2") +
-                 " render fps:" + (accum/(float)frames).ToString("f2"));
-			}
-      timeleft = UPDATE_INTERVAL;
-      accum = 0.0f;
-      frames = 0;
-    }
+		Environment.NewLine + "Render FPS:" + Mathf.RoundToInt(fps).ToString ("f2");
+	}
   }
 
   void FixedUpdate() {
